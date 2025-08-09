@@ -1,0 +1,218 @@
+version: '3.8'
+
+services:
+  wahapedia-scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: wahapedia-scraper:latest
+    container_name: wahapedia-scraper
+    restart: unless-stopped
+    
+    environment:
+      # Application settings
+      - SERVICE_NAME=wahapedia-scraper
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - WORKERS=${WORKERS:-4}
+      
+      # Redis configuration
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_DB=${REDIS_DB:-0}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      
+      # Scraping configuration
+      - SCRAPING_DELAY=${SCRAPING_DELAY:-1.0}
+      - REQUEST_TIMEOUT=${REQUEST_TIMEOUT:-30}
+      - MAX_RETRIES=${MAX_RETRIES:-3}
+      - USER_AGENT=${USER_AGENT:-WH40K-Meta-Analysis-Bot/1.0}
+      
+      # Database configuration for state management
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:password@postgres:5432/wahapedia_scraper}
+      
+      # Celery configuration
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL:-redis://redis:6379/1}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND:-redis://redis:6379/2}
+      
+      # Feature flags
+      - ENABLE_INCREMENTAL_SCRAPING=${ENABLE_INCREMENTAL_SCRAPING:-true}
+      - ENABLE_VERSION_DETECTION=${ENABLE_VERSION_DETECTION:-true}
+      - ENABLE_CHANGE_DETECTION=${ENABLE_CHANGE_DETECTION:-true}
+      
+    ports:
+      - "8002:8000"  # FastAPI endpoint
+      - "9002:9000"  # Metrics endpoint
+    
+    volumes:
+      # Persistent data storage
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./cache:/app/cache
+      
+      # Configuration files (read-only)
+      - ./config:/app/config:ro
+    
+    networks:
+      - warhammer-network
+    
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+  
+  # Celery Worker for background tasks
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: wahapedia-scraper:latest
+    container_name: wahapedia-celery-worker
+    restart: unless-stopped
+    
+    command: celery -A app.tasks worker --loglevel=info --concurrency=2
+    
+    environment:
+      # Copy all environment variables from main service
+      - SERVICE_NAME=wahapedia-celery-worker
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_DB=${REDIS_DB:-0}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL:-redis://redis:6379/1}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND:-redis://redis:6379/2}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:password@postgres:5432/wahapedia_scraper}
+      - SCRAPING_DELAY=${SCRAPING_DELAY:-1.0}
+      - REQUEST_TIMEOUT=${REQUEST_TIMEOUT:-30}
+      - MAX_RETRIES=${MAX_RETRIES:-3}
+    
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./cache:/app/cache
+      - ./config:/app/config:ro
+    
+    networks:
+      - warhammer-network
+    
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+  
+  # Celery Beat for scheduled tasks
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: wahapedia-scraper:latest
+    container_name: wahapedia-celery-beat
+    restart: unless-stopped
+    
+    command: celery -A app.tasks beat --loglevel=info
+    
+    environment:
+      - SERVICE_NAME=wahapedia-celery-beat
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL:-redis://redis:6379/1}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND:-redis://redis:6379/2}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:password@postgres:5432/wahapedia_scraper}
+    
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config:/app/config:ro
+    
+    networks:
+      - warhammer-network
+    
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+  
+  # Redis for messaging and caching
+  redis:
+    image: redis:7-alpine
+    container_name: wahapedia-redis
+    restart: unless-stopped
+    
+    ports:
+      - "6379:6379"
+    
+    volumes:
+      - redis-data:/data
+    
+    networks:
+      - warhammer-network
+    
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    
+    command: redis-server --appendonly yes --appendfsync everysec
+  
+  # PostgreSQL for state management
+  postgres:
+    image: postgres:15-alpine
+    container_name: wahapedia-postgres
+    restart: unless-stopped
+    
+    environment:
+      - POSTGRES_DB=wahapedia_scraper
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    
+    ports:
+      - "5432:5432"
+    
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d:ro
+    
+    networks:
+      - warhammer-network
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  warhammer-network:
+    driver: bridge
+    name: warhammer-network
+
+volumes:
+  redis-data:
+    driver: local
+  postgres-data:
+    driver: local
