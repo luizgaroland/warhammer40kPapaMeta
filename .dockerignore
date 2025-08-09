@@ -1,0 +1,112 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+*.cover
+.coverage.*
+*.log
+
+# Virtual Environment
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Project specific
+logs/
+*.log
+data/
+cache/
+temp/
+tmp/
+.env
+.env.local
+.env.*.local
+docker-compose.override.yml
+
+# Git
+.git/
+.gitignore
+.gitlab-ci.yml
+.github/
+
+# Documentation
+docs/
+*.md
+README.md
+LICENSE
+
+# Testing
+tests/
+test_*.py
+*_test.py
+conftest.py
+.pytest_cache/
+coverage.xml
+*.cover
+
+# Development
+.dockerignore
+Dockerfile.dev
+docker-compose.dev.yml
+Makefile
+scripts/
+notebooks/
+*.ipynb
+
+# Build artifacts
+build/
+*.spec
+
+# Monitoring
+grafana/
+prometheus/
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Node (if any frontend assets)
+node_modules/
+npm-debug.log
+yarn-error.log
