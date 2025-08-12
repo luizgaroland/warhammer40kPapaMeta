@@ -13,16 +13,26 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONPATH=/app
 
-# Install Python packages
-RUN pip install --no-cache-dir \
-    beautifulsoup4==4.12.2 \
-    requests==2.31.0 \
-    redis==5.0.1 \
-    psycopg2-binary==2.9.9 \
-    sqlalchemy==2.0.23 \
-    pydantic==2.5.2 \
-    python-dotenv==1.0.0 \
-    lxml==4.9.3
+# Create requirements.txt with ALL dependencies
+RUN echo "beautifulsoup4==4.12.2" > requirements.txt && \
+    echo "requests==2.31.0" >> requirements.txt && \
+    echo "redis==5.0.1" >> requirements.txt && \
+    echo "psycopg2-binary==2.9.9" >> requirements.txt && \
+    echo "sqlalchemy==2.0.23" >> requirements.txt && \
+    echo "pydantic==2.5.2" >> requirements.txt && \
+    echo "pydantic-settings==2.1.0" >> requirements.txt && \
+    echo "python-dotenv==1.0.0" >> requirements.txt && \
+    echo "lxml==4.9.3" >> requirements.txt && \
+    echo "structlog==23.2.0" >> requirements.txt && \
+    echo "tenacity==8.2.3" >> requirements.txt && \
+    echo "httpx==0.25.2" >> requirements.txt && \
+    echo "celery==5.3.4" >> requirements.txt && \
+    echo "fastapi==0.104.1" >> requirements.txt && \
+    echo "uvicorn==0.24.0" >> requirements.txt && \
+    echo "alembic==1.13.0" >> requirements.txt
+
+# Install all Python packages
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY . .
@@ -36,5 +46,4 @@ RUN useradd -m -u 1000 scraper && \
 
 USER scraper
 
-# Use different ways to run the module
 CMD ["python", "src/main.py"]

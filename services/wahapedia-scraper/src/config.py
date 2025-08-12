@@ -1,11 +1,11 @@
-# services/wahapedia-scraper/src/config.py
 """
 Configuration management for Wahapedia Scraper Service
 """
 import os
 from dataclasses import dataclass
 from typing import Optional
-from pydantic import BaseSettings, Field
+from pydantic_settings import BaseSettings  # Changed this line!
+from pydantic import Field
 
 
 class Settings(BaseSettings):
