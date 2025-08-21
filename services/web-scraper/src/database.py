@@ -1,4 +1,4 @@
-# services/wahapedia-scraper/src/database.py
+# services/web-scraper/src/database.py
 """
 Database connection and management for Wahapedia Scraper
 """

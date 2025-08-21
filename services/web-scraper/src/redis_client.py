@@ -1,4 +1,4 @@
-# services/wahapedia-scraper/src/redis_client.py
+# services/web-scraper/src/redis_client.py
 """
 Redis connection and pub/sub management for Wahapedia Scraper
 """
@@ -88,7 +88,7 @@ class RedisManager:
             
             # Add metadata to message
             message['timestamp'] = datetime.now().isoformat()
-            message['source'] = 'wahapedia-scraper'
+            message['source'] = 'web-scraper'
             
             # Serialize and publish
             message_json = json.dumps(message)

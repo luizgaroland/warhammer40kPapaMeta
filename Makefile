@@ -49,20 +49,20 @@ init:
 	@echo ""
 	@echo "Creating directory structure..."
 	@mkdir -p database/init database/backups
-	@mkdir -p services/wahapedia-scraper/src/scrapers
-	@mkdir -p services/wahapedia-scraper/src/publishers
-	@mkdir -p services/wahapedia-scraper/src/utils
-	@mkdir -p services/wahapedia-scraper/tests
+	@mkdir -p services/web-scraper/src/scrapers
+	@mkdir -p services/web-scraper/src/publishers
+	@mkdir -p services/web-scraper/src/utils
+	@mkdir -p services/web-scraper/tests
 	@mkdir -p services/laravel
 	@mkdir -p logs/scraper logs/laravel
 	@echo "✓ Directories created"
 	@echo ""
 	@echo "Creating Python package structure..."
-	@touch services/wahapedia-scraper/src/__init__.py
-	@touch services/wahapedia-scraper/src/scrapers/__init__.py
-	@touch services/wahapedia-scraper/src/publishers/__init__.py
-	@touch services/wahapedia-scraper/src/utils/__init__.py
-	@touch services/wahapedia-scraper/tests/__init__.py
+	@touch services/web-scraper/src/__init__.py
+	@touch services/web-scraper/src/scrapers/__init__.py
+	@touch services/web-scraper/src/publishers/__init__.py
+	@touch services/web-scraper/src/utils/__init__.py
+	@touch services/web-scraper/tests/__init__.py
 	@echo "✓ Python packages initialized"
 	@echo ""
 	@echo "Setting up environment file..."
@@ -190,7 +190,7 @@ restore-db:
 # Test scraper connections
 test-scraper:
 	@echo "Testing scraper connections..."
-	@docker exec warhammer_wahapedia_scraper python -c " \
+	@docker exec warhammer_web_scraper python -c " \
 		import sys; \
 		print('Testing database connection...'); \
 		try: \
@@ -219,7 +219,7 @@ test-scraper:
 # Open shell in scraper container
 shell-scraper:
 	@echo "Opening scraper shell..."
-	@docker exec -it warhammer_wahapedia_scraper /bin/bash
+	@docker exec -it warhammer_web_scraper /bin/bash
 
 # Scrape a specific faction
 scrape-faction:
@@ -229,7 +229,7 @@ scrape-faction:
 		exit 1; \
 	fi
 	@echo "Scraping faction: $(FACTION)"
-	@docker exec warhammer_wahapedia_scraper python -m src.scrapers.wahapedia --faction $(FACTION)
+	@docker exec warhammer_web_scraper python -m src.scrapers.wahapedia --faction $(FACTION)
 
 # =====================================================
 # Monitoring
@@ -241,7 +241,7 @@ logs:
 
 # View scraper logs only
 logs-scraper:
-	@docker-compose logs -f --tail=100 wahapedia-scraper
+	@docker-compose logs -f --tail=100 web-scraper
 
 # Show container status
 status:
@@ -275,9 +275,9 @@ test:
 
 # Quick restart for development
 dev-restart:
-	@docker-compose restart wahapedia-scraper
+	@docker-compose restart web-scraper
 	@echo "✓ Scraper restarted"
-	@docker-compose logs -f --tail=50 wahapedia-scraper
+	@docker-compose logs -f --tail=50 web-scraper
 
 # =====================================================
 # Docker Management
@@ -313,7 +313,7 @@ check-files:
 	@echo "Checking required files..."
 	@[ -f docker-compose.yml ] && echo "✓ docker-compose.yml" || echo "❌ docker-compose.yml missing"
 	@[ -f .env ] && echo "✓ .env" || echo "❌ .env missing"
-	@[ -f services/wahapedia-scraper/Dockerfile ] && echo "✓ Scraper Dockerfile" || echo "❌ Scraper Dockerfile missing"
+	@[ -f services/web-scraper/Dockerfile ] && echo "✓ Scraper Dockerfile" || echo "❌ Scraper Dockerfile missing"
 	@[ -f database/init/schema.sql ] && echo "✓ Database schema" || echo "❌ Database schema missing"
 	@[ -f Makefile ] && echo "✓ Makefile" || echo "❌ Makefile missing"
 

@@ -1,4 +1,4 @@
-# services/wahapedia-scraper/src/publishers/scraper_publisher.py
+# services/web-scraper/src/publishers/scraper_publisher.py
 
 import sys
 sys.path.insert(0, '/app/src')

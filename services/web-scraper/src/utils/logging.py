@@ -1,4 +1,4 @@
-# services/wahapedia-scraper/src/utils/logging.py
+# services/web-scraper/src/utils/logging.py
 """
 Logging configuration for Wahapedia Scraper Service
 """
@@ -14,7 +14,7 @@ from logging.handlers import RotatingFileHandler, TimedRotatingFileHandler
 def setup_logging(
     log_level: str = "INFO",
     log_dir: str = "/app/logs",
-    service_name: str = "wahapedia-scraper",
+    service_name: str = "web-scraper",
     enable_json: bool = False
 ):
     """

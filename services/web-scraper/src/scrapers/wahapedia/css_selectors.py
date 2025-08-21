@@ -1,4 +1,4 @@
-# services/wahapedia-scraper/src/scrapers/wahapedia/css_selectors.py
+# services/web-scraper/src/scrapers/wahapedia/css_selectors.py
 
 """
 CSS selectors and patterns for Wahapedia scraping.

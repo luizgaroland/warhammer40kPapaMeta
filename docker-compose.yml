@@ -84,12 +84,12 @@ services:
   # MICROSERVICES
   # =====================================================
 
-  # Python Wahapedia Scraper Service
-  wahapedia-scraper:
+  # Python Web Scraper Service
+  web-scraper:
     build:
-      context: ./services/wahapedia-scraper
+      context: ./services/web-scraper
       dockerfile: Dockerfile
-    container_name: warhammer_wahapedia_scraper
+    container_name: warhammer_web_scraper
     restart: unless-stopped
     environment:
       # Database connection

@@ -69,9 +69,9 @@ settings = Settings()
 
 
 # Service identification
-SERVICE_NAME = "wahapedia-scraper"
+SERVICE_NAME = "web-scraper"
 SERVICE_VERSION = "0.1.0"
-USER_AGENT = f"WH40K-Meta-Analyzer/{SERVICE_VERSION} (Wahapedia Scraper Bot)"
+USER_AGENT = f"WH40K-Meta-Analyzer/{SERVICE_VERSION} (Web Scraper Bot)"
 
 # Redis Channel Names
 class RedisChannels:

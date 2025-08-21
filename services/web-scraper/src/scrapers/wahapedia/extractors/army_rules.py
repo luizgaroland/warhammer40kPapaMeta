@@ -1,4 +1,4 @@
-# services/wahapedia-scraper/src/scrapers/wahapedia/extractors/army_rules.py
+# services/web-scraper/src/scrapers/wahapedia/extractors/army_rules.py
 
 import sys
 sys.path.insert(0, '/app/src/scrapers/wahapedia')

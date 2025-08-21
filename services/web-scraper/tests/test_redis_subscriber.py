@@ -1,4 +1,4 @@
-# services/wahapedia-scraper/tests/test_redis_subscriber.py
+# services/web-scraper/tests/test_redis_subscriber.py
 
 import sys
 sys.path.insert(0, '/app/src')

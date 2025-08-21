@@ -1,4 +1,4 @@
-# services/wahapedia-scraper/src/scrapers/wahapedia/base_scraper.py
+# services/web-scraper/src/scrapers/wahapedia/base_scraper.py
 
 import time
 import random

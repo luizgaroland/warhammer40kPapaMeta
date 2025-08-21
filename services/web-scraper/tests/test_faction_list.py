@@ -1,4 +1,4 @@
-# services/wahapedia-scraper/tests/test_faction_list.py
+# services/web-scraper/tests/test_faction_list.py
 
 import sys
 sys.path.insert(0, '/app/src/scrapers/wahapedia')
