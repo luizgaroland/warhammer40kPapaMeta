@@ -114,7 +114,7 @@ services:
       PYTHONUNBUFFERED: 1
       PYTHONDONTWRITEBYTECODE: 1
     volumes:
-      - ./services/wahapedia-scraper:/app
+      - ./services/web-scraper:/app
       - ./logs/scraper:/app/logs
     networks:
       - warhammer_network

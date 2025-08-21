@@ -88,14 +88,19 @@ class ArmyRulesExtractor(BaseScraper):
                 self.logger.warning(f"No BreakInsideAvoid div found for {faction_name}")
                 return None
 
+        # Army name
         # Find the first h3 tag
-        h3_tag = break_div.find('h3')
+        army_rule_header = break_div.find('h3')
 
-        if not h3_tag:
+        if not army_rule_header:
             self.logger.warning(f"No h3 tag found in army rules section for {faction_name}")
-            return None
+            army_rule_header = break_div.find('h2')
 
-        army_rule_name = self.safe_extract_text(h3_tag)
+            if not army_rule_header:
+                self.logger.warning(f"No h2 tag found in army rules section for {faction_name}")
+                return None
+
+        army_rule_name = self.safe_extract_text(army_rule_header)
 
         if army_rule_name:
             result = {

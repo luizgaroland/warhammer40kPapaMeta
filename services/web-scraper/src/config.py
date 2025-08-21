@@ -1,5 +1,5 @@
 """
-Configuration management for Wahapedia Scraper Service
+Configuration management for Web Scraper Service
 """
 import os
 from dataclasses import dataclass

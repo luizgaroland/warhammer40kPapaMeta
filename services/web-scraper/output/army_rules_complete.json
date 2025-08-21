@@ -60,6 +60,12 @@
     "army_rule_name": "The Shadow of Chaos"
   },
   {
+    "faction_name": "Chaos Knights",
+    "faction_code": "chaos-knights",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/chaos-knights",
+    "army_rule_name": "Harbingers of Dread"
+  },
+  {
     "faction_name": "Chaos Space Marines",
     "faction_code": "chaos-space-marines",
     "faction_url": "https://wahapedia.ru/wh40k10ed/factions/chaos-space-marines",
