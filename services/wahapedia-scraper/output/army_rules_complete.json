@@ -1,0 +1,128 @@
+[
+  {
+    "faction_name": "Adepta Sororitas",
+    "faction_code": "adepta-sororitas",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/adepta-sororitas",
+    "army_rule_name": "Acts of Faith"
+  },
+  {
+    "faction_name": "Adeptus Custodes",
+    "faction_code": "adeptus-custodes",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/adeptus-custodes",
+    "army_rule_name": "Martial Ka\u2019tah"
+  },
+  {
+    "faction_name": "Adeptus Mechanicus",
+    "faction_code": "adeptus-mechanicus",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/adeptus-mechanicus",
+    "army_rule_name": "Doctrina Imperatives"
+  },
+  {
+    "faction_name": "Adeptus Titanicus",
+    "faction_code": "adeptus-titanicus",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/adeptus-titanicus",
+    "army_rule_name": "Towering Example"
+  },
+  {
+    "faction_name": "Astra Militarum",
+    "faction_code": "astra-militarum",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/astra-militarum",
+    "army_rule_name": "Voice of Command"
+  },
+  {
+    "faction_name": "Grey Knights",
+    "faction_code": "grey-knights",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/grey-knights",
+    "army_rule_name": "Teleport Assault"
+  },
+  {
+    "faction_name": "Imperial Agents",
+    "faction_code": "imperial-agents",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/imperial-agents",
+    "army_rule_name": "Assigned Agents"
+  },
+  {
+    "faction_name": "Imperial Knights",
+    "faction_code": "imperial-knights",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/imperial-knights",
+    "army_rule_name": "Code Chivalric"
+  },
+  {
+    "faction_name": "Space Marines",
+    "faction_code": "space-marines",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/space-marines",
+    "army_rule_name": "Oath of Moment"
+  },
+  {
+    "faction_name": "Chaos Daemons",
+    "faction_code": "chaos-daemons",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/chaos-daemons",
+    "army_rule_name": "The Shadow of Chaos"
+  },
+  {
+    "faction_name": "Chaos Space Marines",
+    "faction_code": "chaos-space-marines",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/chaos-space-marines",
+    "army_rule_name": "Dark Pacts"
+  },
+  {
+    "faction_name": "Emperor\u2019s Children",
+    "faction_code": "emperor-s-children",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/emperor-s-children",
+    "army_rule_name": "Thrill Seekers"
+  },
+  {
+    "faction_name": "World Eaters",
+    "faction_code": "world-eaters",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/world-eaters",
+    "army_rule_name": "Pact of Blood"
+  },
+  {
+    "faction_name": "Aeldari",
+    "faction_code": "aeldari",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/aeldari",
+    "army_rule_name": "Battle Focus"
+  },
+  {
+    "faction_name": "Drukhari",
+    "faction_code": "drukhari",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/drukhari",
+    "army_rule_name": "Power From Pain"
+  },
+  {
+    "faction_name": "Leagues of Votann",
+    "faction_code": "leagues-of-votann",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/leagues-of-votann",
+    "army_rule_name": "Eye of the Ancestors"
+  },
+  {
+    "faction_name": "Necrons",
+    "faction_code": "necrons",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/necrons",
+    "army_rule_name": "Reanimation Protocols"
+  },
+  {
+    "faction_name": "Orks",
+    "faction_code": "orks",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/orks",
+    "army_rule_name": "Waaagh!"
+  },
+  {
+    "faction_name": "T\u2019au Empire",
+    "faction_code": "t-au-empire",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/t-au-empire",
+    "army_rule_name": "For the Greater Good"
+  },
+  {
+    "faction_name": "Tyranids",
+    "faction_code": "tyranids",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/tyranids",
+    "army_rule_name": "Synapse"
+  },
+  {
+    "faction_name": "Unaligned Forces",
+    "faction_code": "unaligned-forces",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/unaligned-forces",
+    "army_rule_name": "Unaligned Forces"
+  }
+]

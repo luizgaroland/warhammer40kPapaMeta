@@ -1,0 +1,20 @@
+[
+  {
+    "faction_name": "Adepta Sororitas",
+    "faction_code": "adepta-sororitas",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/adepta-sororitas",
+    "army_rule_name": "Acts of Faith"
+  },
+  {
+    "faction_name": "Adeptus Custodes",
+    "faction_code": "adeptus-custodes",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/adeptus-custodes",
+    "army_rule_name": "Martial Ka\u2019tah"
+  },
+  {
+    "faction_name": "Adeptus Mechanicus",
+    "faction_code": "adeptus-mechanicus",
+    "faction_url": "https://wahapedia.ru/wh40k10ed/factions/adeptus-mechanicus",
+    "army_rule_name": "Doctrina Imperatives"
+  }
+]
