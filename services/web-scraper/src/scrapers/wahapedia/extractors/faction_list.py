@@ -9,8 +9,9 @@ import json
 from base_scraper import BaseScraper
 from css_selectors import FACTION_SELECTORS, URLS
 from scraper_publisher import ScraperPublisher
+from base_extractor import BaseExtractor
 
-class FactionListExtractor(BaseScraper):
+class FactionListExtractor(BaseExtractor):
     """Extractor for getting all faction names and URLs from Wahapedia."""
 
     def __init__(self, publish_to_redis: bool = True):

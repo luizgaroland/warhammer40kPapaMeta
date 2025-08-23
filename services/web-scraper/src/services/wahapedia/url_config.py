@@ -37,7 +37,7 @@ class WahapediaURLConfig:
         """
         self.version_id = version_id
         self.url_path = self.VERSION_URL_MAPPING.get(
-                version_id, 
+                version_id,
                 "wh40k10ed"  # Default to 10th
                 )
 
@@ -86,6 +86,21 @@ class WahapediaURLConfig:
     def get_army_lists_url(self) -> str:
         """Get URL for army lists page."""
         return f"{self.BASE_URL}/{self.url_path}/army-lists/"
+    def get_detachments_anchor(self, faction_code: str) -> str:
+        """Get URL anchor for detachments section."""
+        return f"{self.get_faction_url(faction_code)}#Detachments"
+
+    def get_enhancements_url(self, faction_code: str) -> str:
+        """Get URL for enhancements section."""
+        return f"{self.get_faction_url(faction_code)}#Enhancements"
+
+    def get_stratagems_url(self, faction_code: str) -> str:
+        """Get URL for stratagems."""
+        return f"{self.BASE_URL}/{self.url_path}/factions/{faction_code}/stratagems"
+
+    def get_unit_datasheet_url(self, faction_code: str, unit_slug: str) -> str:
+        """Get URL for specific unit datasheet."""
+        return f"{self.BASE_URL}/{self.url_path}/factions/{faction_code}/datasheets#{unit_slug}"
 
     def build_url(self, path: str) -> str:
         """
