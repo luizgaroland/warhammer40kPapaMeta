@@ -9,8 +9,9 @@ from typing import List, Dict, Any, Optional
 from src.utils.logging import get_logger
 
 from core.base_scraper_service import BaseScraperService
+from scrapers.wahapedia.base_scraper import BaseScraper
 from core.scraper_context import ScraperContext
-from services.url_config import WahapediaURLConfig
+from services.wahapedia.url_config import WahapediaURLConfig
 
 logger = get_logger(__name__)
 

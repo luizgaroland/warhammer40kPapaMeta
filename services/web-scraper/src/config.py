@@ -4,7 +4,7 @@ Configuration management for Web Scraper Service
 import os
 from dataclasses import dataclass
 from typing import Optional
-from pydantic_settings import BaseSettings  # Changed this line!
+from pydantic_settings import BaseSettings
 from pydantic import Field
 
 
@@ -33,10 +33,8 @@ class Settings(BaseSettings):
     # Application paths
     log_dir: str = Field(default="/app/logs", env="LOG_DIR")
     data_dir: str = Field(default="/app/data", env="DATA_DIR")
-    # services/web-scraper/src/config.py (updated fields)
-class Settings(BaseSettings):
-
-    # Game Version Configuration (simplified)
+    
+    # Game Version Configuration
     game_version_id: str = Field(
         default="10th",
         env="GAME_VERSION_ID",
@@ -61,9 +59,9 @@ class Settings(BaseSettings):
     def database_url(self) -> str:
         """Construct PostgreSQL connection URL"""
         return (
-                f"postgresql://{self.database_user}:{self.database_password}"
-                f"@{self.database_host}:{self.database_port}/{self.database_name}"
-                )
+            f"postgresql://{self.database_user}:{self.database_password}"
+            f"@{self.database_host}:{self.database_port}/{self.database_name}"
+        )
 
     @property
     def redis_url(self) -> str:
@@ -115,15 +113,4 @@ class MessageTypes:
     ERROR_REPORT = "error_report"
     VERSION_CHANGE = "version_change"
 
-# Add these fields to Settings class if they are missing
-# (This is a patch - you should properly add these to the Settings class)
-if not hasattr(settings, "database_user"):
-    settings.database_user = "warhammer_user"
-if not hasattr(settings, "database_password"):
-    settings.database_password = "warhammer_secret_2024"
-if not hasattr(settings, "database_host"):
-    settings.database_host = "postgres"
-if not hasattr(settings, "database_port"):
-    settings.database_port = 5432
-if not hasattr(settings, "database_name"):
-    settings.database_name = "warhammer_meta"
+# Remove the patch code at the bottom - it's not needed anymore

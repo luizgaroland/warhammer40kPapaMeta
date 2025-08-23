@@ -117,15 +117,15 @@ def test_wahapedia_service_methods():
             print(f"  ✓ Retrieved {len(factions)} factions")
             print("  Sample factions:")
             for i, faction in enumerate(factions[:3], 1):
-                print(f"    {i}. {faction.get(name, Unknown)} ({faction.get(code, N/A)})")
+                print(f"    {i}. {faction.get('name', 'Unknown')} ({faction.get('code', 'N/A')})")
 
                 # Check required fields
                 if "source" in faction:
-                    print(f"       - Source: {faction[source]}")
+                    print(f"       - Source: {faction['source']}")
                 if "version_id" in faction:
-                    print(f"       - Version: {faction[version_id]}")
-        else:
-            print("  ⚠️  No factions retrieved")
+                    print(f"       - Version: {faction['version_id']}")
+                else:
+                    print("  ⚠️  No factions retrieved")
 
         # Test get_army_rules method
         print("\n  Testing get_army_rules()...")
@@ -133,7 +133,7 @@ def test_wahapedia_service_methods():
             test_faction = factions[0]
             army_rules = service.get_army_rules(test_faction)
             if army_rules:
-                print(f"  ✓ Got army rules for {test_faction.get(name)}")
+                print(f"  ✓ Got army rules for {test_faction.get('name')}")
                 print(f"    - Rule: {army_rules}")
             else:
                 print(f"  ℹ️  No army rules returned (may not be implemented)")
