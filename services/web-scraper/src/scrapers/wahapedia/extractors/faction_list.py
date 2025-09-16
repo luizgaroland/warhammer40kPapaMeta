@@ -1,32 +1,30 @@
 # services/web-scraper/src/scrapers/wahapedia/extractors/faction_list.py
 
-import sys
-sys.path.insert(0, '/app/src/scrapers/wahapedia')
-sys.path.insert(0, '/app/src/publishers')
-
 from typing import List, Dict, Optional
-import json
-from base_scraper import BaseScraper
-from css_selectors import FACTION_SELECTORS, URLS
-from scraper_publisher import ScraperPublisher
-from base_extractor import BaseExtractor
+import sys
+import os
+
+# Add the src directory to Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+
+from scrapers.wahapedia.css_selectors import FACTION_SELECTORS, URLS
+from .base_extractor import BaseExtractor
 
 class FactionListExtractor(BaseExtractor):
     """Extractor for getting all faction names and URLs from Wahapedia."""
 
-    def __init__(self, publish_to_redis: bool = True):
+    def __init__(self, version_id: str = "10th", publish_to_redis: bool = True, rate_limit_min: float = 2.0, rate_limit_max: float = 3.0):
         """
         Initialize the faction list extractor.
 
         Args:
+            version_id: Warhammer 40k edition version (default: "10th")
             publish_to_redis: Whether to publish results to Redis
+            rate_limit_min: Minimum seconds between requests
+            rate_limit_max: Maximum seconds between requests
         """
-        super().__init__()
+        super().__init__(version_id=version_id, publish_to_redis=publish_to_redis, rate_limit_min=rate_limit_min, rate_limit_max=rate_limit_max)
         self.factions = []
-        self.publish_to_redis = publish_to_redis
-
-        if self.publish_to_redis:
-            self.publisher = ScraperPublisher()
 
     def extract_factions(self) -> List[Dict[str, str]]:
         """
@@ -38,19 +36,17 @@ class FactionListExtractor(BaseExtractor):
         self.logger.info("Starting faction extraction...")
 
         # Publish start status if Redis is enabled
-        if self.publish_to_redis:
-            self.publisher.publish_status('started', {'task': 'faction_extraction'})
+        self.publish_status('started', {'task': 'faction_extraction'})
 
         # Fetch the quick start page which has the faction dropdown
         soup = self.fetch_and_parse(URLS['quick_start'])
 
         if not soup:
             self.logger.error("Failed to fetch quick start page")
-            if self.publish_to_redis:
-                self.publisher.publish_status('error', {
-                    'task': 'faction_extraction',
-                    'error': 'Failed to fetch quick start page'
-                    })
+            self.publish_status('error', {
+                'task': 'faction_extraction',
+                'error': 'Failed to fetch quick start page'
+            })
             return []
 
         # Find the faction navigation button
@@ -58,11 +54,10 @@ class FactionListExtractor(BaseExtractor):
 
         if not faction_btn:
             self.logger.error("Could not find faction navigation button")
-            if self.publish_to_redis:
-                self.publisher.publish_status('error', {
-                    'task': 'faction_extraction',
-                    'error': 'Could not find faction navigation button'
-                    })
+            self.publish_status('error', {
+                'task': 'faction_extraction',
+                'error': 'Could not find faction navigation button'
+            })
             return []
 
         # The dropdown content is actually present in the HTML,
@@ -78,11 +73,10 @@ class FactionListExtractor(BaseExtractor):
 
         if not dropdown:
             self.logger.error("Could not find faction dropdown content")
-            if self.publish_to_redis:
-                self.publisher.publish_status('error', {
-                    'task': 'faction_extraction',
-                    'error': 'Could not find faction dropdown content'
-                    })
+            self.publish_status('error', {
+                'task': 'faction_extraction',
+                'error': 'Could not find faction dropdown content'
+            })
             return []
 
         self.logger.info("Found faction dropdown content")
@@ -115,19 +109,29 @@ class FactionListExtractor(BaseExtractor):
 
         self.logger.info(f"Successfully extracted {len(self.factions)} factions")
 
+        # Update extracted_data for base class compatibility
+        self.extracted_data = self.factions
+
         # Publish to Redis if enabled and we have factions
         if self.publish_to_redis and self.factions:
-            success = self.publisher.publish_factions(self.factions)
-            if success:
-                self.publisher.publish_status('completed', {
-                    'task': 'faction_extraction',
-                    'faction_count': len(self.factions)
+            try:
+                success = self.publisher.publish_factions(self.factions)
+                if success:
+                    self.publish_status('completed', {
+                        'task': 'faction_extraction',
+                        'faction_count': len(self.factions)
                     })
-            else:
-                self.publisher.publish_status('error', {
-                    'task': 'faction_extraction',
-                    'error': 'Failed to publish to Redis'
+                else:
+                    self.publish_status('error', {
+                        'task': 'faction_extraction',
+                        'error': 'Failed to publish to Redis'
                     })
+            except Exception as e:
+                self.logger.error(f"Error publishing factions: {str(e)}")
+                self.publish_status('error', {
+                    'task': 'faction_extraction',
+                    'error': f'Publishing error: {str(e)}'
+                })
 
         return self.factions
 
@@ -149,20 +153,14 @@ class FactionListExtractor(BaseExtractor):
                 return parts[faction_index + 1]
         return ""
 
-    def save_to_json(self, filename: str = 'factions.json'):
+    def save_factions_to_json(self, filename: str = 'factions.json') -> bool:
         """
         Save extracted factions to a JSON file.
 
         Args:
             filename: Output filename
+            
+        Returns:
+            True if saved successfully, False otherwise
         """
-        if not self.factions:
-            self.logger.warning("No factions to save")
-            return
-
-        try:
-            with open(filename, 'w') as f:
-                json.dump(self.factions, f, indent=2)
-            self.logger.info(f"Saved {len(self.factions)} factions to {filename}")
-        except Exception as e:
-            self.logger.error(f"Error saving to JSON: {str(e)}")
+        return super().save_to_json(self.factions, filename)

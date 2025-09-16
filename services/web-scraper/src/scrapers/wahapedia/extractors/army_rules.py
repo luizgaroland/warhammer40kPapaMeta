@@ -1,32 +1,31 @@
 # services/web-scraper/src/scrapers/wahapedia/extractors/army_rules.py
 
-import sys
-sys.path.insert(0, '/app/src/scrapers/wahapedia')
-sys.path.insert(0, '/app/src/publishers')
-
 from typing import List, Dict, Optional
-import json
-from base_scraper import BaseScraper
-from css_selectors import ARMY_RULE_SELECTORS
-from scraper_publisher import ScraperPublisher
+import sys
+import os
+
+# Add the src directory to Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+
+from scrapers.wahapedia.css_selectors import ARMY_RULE_SELECTORS
+from .base_extractor import BaseExtractor
 from redis_client import redis_manager
 
-class ArmyRulesExtractor(BaseScraper):
+class ArmyRulesExtractor(BaseExtractor):
     """Extractor for getting army rules for each faction."""
 
-    def __init__(self, publish_to_redis: bool = True):
+    def __init__(self, version_id: str = "10th", publish_to_redis: bool = True, rate_limit_min: float = 2.0, rate_limit_max: float = 3.0):
         """
         Initialize the army rules extractor.
 
         Args:
+            version_id: Warhammer 40k edition version (default: "10th")
             publish_to_redis: Whether to publish results to Redis
+            rate_limit_min: Minimum seconds between requests
+            rate_limit_max: Maximum seconds between requests
         """
-        super().__init__()
+        super().__init__(version_id=version_id, publish_to_redis=publish_to_redis, rate_limit_min=rate_limit_min, rate_limit_max=rate_limit_max)
         self.army_rules = []
-        self.publish_to_redis = publish_to_redis
-
-        if self.publish_to_redis:
-            self.publisher = ScraperPublisher()
 
     def extract_army_rule_for_faction(self, faction_data: Dict[str, str]) -> Optional[Dict[str, str]]:
         """
@@ -38,13 +37,14 @@ class ArmyRulesExtractor(BaseScraper):
         Returns:
             Dictionary with faction info and army rule, or None if failed
         """
-        faction_name = faction_data.get('name')
-        faction_url = faction_data.get('url')
-        faction_code = faction_data.get('code')
-
-        if not faction_url:
-            self.logger.error(f"No URL for faction {faction_name}")
+        # Validate faction data using base class method
+        validated_faction = self.safe_extract_faction_info(faction_data)
+        if not validated_faction:
             return None
+            
+        faction_name = validated_faction['name']
+        faction_url = validated_faction['url']
+        faction_code = validated_faction['code']
 
         self.logger.info(f"Extracting army rule for {faction_name}")
 
@@ -127,8 +127,7 @@ class ArmyRulesExtractor(BaseScraper):
         """
         self.logger.info(f"Starting army rules extraction for {len(factions)} factions")
 
-        if self.publish_to_redis:
-            self.publisher.publish_status('started', {'task': 'army_rules_extraction'})
+        self.publish_status('started', {'task': 'army_rules_extraction'})
 
         for faction in factions:
             army_rule_data = self.extract_army_rule_for_faction(faction)
@@ -139,6 +138,9 @@ class ArmyRulesExtractor(BaseScraper):
                 self.logger.warning(f"Failed to extract army rule for {faction.get('name')}")
 
         self.logger.info(f"Successfully extracted {len(self.army_rules)} army rules")
+
+        # Update extracted_data for base class compatibility
+        self.extracted_data = self.army_rules
 
         # Publish to Redis if enabled
         if self.publish_to_redis and self.army_rules:
@@ -162,12 +164,12 @@ class ArmyRulesExtractor(BaseScraper):
             )
 
             if success:
-                self.publisher.publish_status('completed', {
+                self.publish_status('completed', {
                     'task': 'army_rules_extraction',
                     'rules_count': len(self.army_rules)
                 })
             else:
-                self.publisher.publish_status('error', {
+                self.publish_status('error', {
                     'task': 'army_rules_extraction',
                     'error': 'Failed to publish to Redis'
                 })
@@ -175,20 +177,14 @@ class ArmyRulesExtractor(BaseScraper):
         except Exception as e:
             self.logger.error(f"Error publishing army rules: {str(e)}")
 
-    def save_to_json(self, filename: str = 'army_rules.json'):
+    def save_army_rules_to_json(self, filename: str = 'army_rules.json') -> bool:
         """
         Save extracted army rules to a JSON file.
 
         Args:
             filename: Output filename
+            
+        Returns:
+            True if saved successfully, False otherwise
         """
-        if not self.army_rules:
-            self.logger.warning("No army rules to save")
-            return
-
-        try:
-            with open(filename, 'w') as f:
-                json.dump(self.army_rules, f, indent=2)
-            self.logger.info(f"Saved {len(self.army_rules)} army rules to {filename}")
-        except Exception as e:
-            self.logger.error(f"Error saving to JSON: {str(e)}")
+        return super().save_to_json(self.army_rules, filename)

@@ -5,12 +5,13 @@ Maps generic version IDs to Wahapedia-specific URL patterns
 """
 
 import sys
-sys.path.insert(0, "/app/src")
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
 from typing import Dict, Optional, List, Set
 from urllib.parse import urlencode, quote
 import re
-from src.utils.logging import get_logger
+from utils.logging import get_logger
 
 logger = get_logger(__name__)
 
